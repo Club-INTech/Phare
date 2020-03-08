@@ -6,17 +6,19 @@
 //#include <XL430.h>
 //#include "DynamixelManager.h"
 
+int Pin1= 4;
 void setup(){
 // bouton poussoir
     // initialize serial communication:
 Serial.begin(9600);
-pinMode(4, INPUT_PULLUP);
+
+pinMode(Pin1, INPUT_PULLUP);
 // Neopixel
 // code XL
 }
 void loop(){
     // bouton poussoir
-    if (digitalRead (4)== LOW)
+    if (digitalRead(Pin1) == LOW )
     {
         Serial.write("Allumée");
     }
