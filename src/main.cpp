@@ -9,29 +9,39 @@
 
 #define PIN 25
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, PIN, NEO_GRB + NEO_KHZ400);
-float Angle = 0;
 int Pin1= 26;
+float Angle;
+
+DynamixelManager* manager ;
+
+
+
+DynamixelMotor* motor1;
+//DynamixelMotor* motor2 = manager->createMotor(2 /* ID du XL */, XL430GeneratorFunction); // XL avec l'ID 2
+
 void setup(){
 // bouton poussoir
 // initialize serial communication:
 Serial.begin(9600);
-
+manager = new DynamixelManager(2,2); // Manageur qui permet de communiquer avec les XL
+    motor1 = manager->createMotor(1 /* ID du XL */, XL430GeneratorFunction); // XL avec l'ID 1
 pinMode(Pin1, INPUT_PULLUP);
 // Neopixel
     pinMode(OUTPUT,25);
     strip.begin();
     strip.show(); // Initialise tous les pixels à 'off' (éteint)
 // code XL
-    DynamixelManager* manager = new DynamixelManager(33, 33); // Manageur qui permet de communiquer avec les XL
-    changeID(manager);
-    DynamixelMotor* motor1 = manager->createMotor(1 /* ID du XL */, XL430GeneratorFunction); // XL avec l'ID 1
-    DynamixelMotor* motor2 = manager->createMotor(2 /* ID du XL */, XL430GeneratorFunction); // XL avec l'ID 2
-
     motor1->changeLED(true); // allume la LED du XL 1
-    motor2->changeLED(true); // allume la LED du XL 2
+//    motor2->changeLED(true); // allume la LED du XL 2
+delay(1000);
+motor1->changeLED(false);
+bool tot;
     motor1->toggleTorque(false);
-    motor1->getCurrentAngle((float &) Angle);
-    Serial.print(Angle);
+    while(true){
+        motor1->changeLED(tot);
+        delay(500);
+        tot = !tot;
+    }
 // répète à l'infini
     /*while(true) {
         motor1->setGoalAngle(90.0f); // fais aller le moteur 1 à 90°
@@ -46,7 +56,7 @@ pinMode(Pin1, INPUT_PULLUP);
     }
      */
 }
-
+/*
 void led(){
     while (true) {
         for (int i = 0; i<3; i++) {
@@ -63,14 +73,22 @@ void loop(){
     // bouton poussoir
     if (digitalRead(Pin1) == LOW )
     {
-        Serial.write("Allumée");
+        Serial.print("Allumée");
         led();
     }
     else
     {
-        Serial.write("Éteint");
+        Serial.print("Éteint");
     }
 // Neopixel
 
 // code XL
+}
+*/
+void loop() {
+    boolean recu=motor1->getCurrentAngle(Angle);
+    Serial.print("Bien recu:");
+    Serial.println((recu?"oui":"non"));
+    Serial.println(Angle);
+    delay(500);
 }

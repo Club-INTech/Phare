@@ -11,8 +11,9 @@
 #include "DynamixelPacketSender.h"
 #include "DynamixelMotor.h"
 #include <map>
+#ifndef LED_BUILTIN
 #define LED_BUILTIN 2
-
+#endif
 // TODO : Rajouter les vraies fonctions de manager
 
 typedef DynamixelMotor* MotorGeneratorFunctionType(uint8_t, DynamixelPacketSender*);
