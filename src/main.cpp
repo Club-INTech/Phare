@@ -25,19 +25,25 @@ void loop(){
     if (digitalRead (4)== LOW)
     {
         Serial.write("Allumée");
+        led();
     }
     else
     {
         Serial.write("Éteint");
     }
 // Neopixel
-for (int i = 0; i<3; i++) {
-    strip.setPixelColor(i, 255, 255, 255);
-    strip.show();
-    delay(100);
-    strip.setPixelColor(i, 0, 0, 0);
-    strip.show();
-}
 
 // code XL
+}
+
+void led(){
+    while (true) {
+        for (int i = 0; i<3; i++) {
+            strip.setPixelColor(i, 255, 255, 255);
+            strip.show();
+            delay(100);
+            strip.setPixelColor(i, 0, 0, 0);
+            strip.show();
+        }
+    }
 }
