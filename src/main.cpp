@@ -9,7 +9,7 @@
 #define PIN 25
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, PIN, NEO_GRB + NEO_KHZ400);
 
-int Pin1= 4;
+int Pin1= 26;
 void setup(){
 // bouton poussoir
     // initialize serial communication:
@@ -22,6 +22,19 @@ pinMode(Pin1, INPUT_PULLUP);
     strip.show(); // Initialise tous les pixels à 'off' (éteint)
 // code XL
 }
+
+void led(){
+    while (true) {
+        for (int i = 0; i<3; i++) {
+            strip.setPixelColor(i, 255, 255, 255);
+            strip.show();
+            delay(100);
+            strip.setPixelColor(i, 0, 0, 0);
+            strip.show();
+        }
+    }
+}
+
 void loop(){
     // bouton poussoir
     if (digitalRead(Pin1) == LOW )
@@ -36,16 +49,4 @@ void loop(){
 // Neopixel
 
 // code XL
-}
-
-void led(){
-    while (true) {
-        for (int i = 0; i<3; i++) {
-            strip.setPixelColor(i, 255, 255, 255);
-            strip.show();
-            delay(100);
-            strip.setPixelColor(i, 0, 0, 0);
-            strip.show();
-        }
-    }
 }
