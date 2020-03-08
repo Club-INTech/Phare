@@ -4,11 +4,16 @@
 
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
+//#include <XL430.h>
+//#include "DynamixelManager.h"
 #define PIN 25
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, PIN, NEO_GRB + NEO_KHZ400);
 
 void setup(){
 // bouton poussoir
+    // initialize serial communication:
+Serial.begin(9600);
+pinMode(4, INPUT_PULLUP);
 // Neopixel
     pinMode(OUTPUT,25);
     strip.begin();
@@ -16,7 +21,15 @@ void setup(){
 // code XL
 }
 void loop(){
-// bouton poussoir
+    // bouton poussoir
+    if (digitalRead (4)== LOW)
+    {
+        Serial.write("Allumée");
+    }
+    else
+    {
+        Serial.write("Éteint");
+    }
 // Neopixel
 for (int i = 0; i<3; i++) {
     strip.setPixelColor(i, 255, 255, 255);

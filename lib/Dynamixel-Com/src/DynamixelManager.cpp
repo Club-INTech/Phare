@@ -3,6 +3,7 @@
 
 #include "DynamixelManager.h"
 
+
 DynamixelManager::DynamixelManager(Stream* debugSerial) : debugSerial(debugSerial)
 {
     txBuffer = new char[30];

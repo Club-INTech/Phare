@@ -11,6 +11,7 @@
 #include "DynamixelPacketSender.h"
 #include "DynamixelMotor.h"
 #include <map>
+#define LED_BUILTIN 2
 
 // TODO : Rajouter les vraies fonctions de manager
 
