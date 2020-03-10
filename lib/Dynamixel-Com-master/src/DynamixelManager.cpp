@@ -3,7 +3,6 @@
 
 #include "DynamixelManager.h"
 
-
 DynamixelManager::DynamixelManager(Stream* debugSerial) : debugSerial(debugSerial)
 {
     txBuffer = new char[30];
@@ -38,9 +37,13 @@ DynamixelManager::DynamixelManager(int pin_RX, int pin_TX, Stream* debugSerial, 
 {
     TX = pin_TX;
     RX = pin_RX;
-
+#ifdef ESP32
+    serial = new SoftwareSerial();
+    ((SoftwareSerial*)serial)->begin(baudrate, SWSERIAL_8N1, RX, TX, false, 128);
+#else
     serial = new SoftwareSerial(RX, TX);
     ((SoftwareSerial*)serial)->begin(baudrate);
+#endif
     serial->setTimeout(50);
 }
 
@@ -97,6 +100,14 @@ char* DynamixelManager::sendPacket(DynamixelPacketData* packet) const
     while(serial->available())
         serial->read();
 
+#ifdef ESP32
+    ((SoftwareSerial*)serial)->flush();
+    ((SoftwareSerial*)serial)->enableTx(true);
+    ((SoftwareSerial*)serial)->write(txBuffer, packet->dataSize);
+    ((SoftwareSerial*)serial)->enableTx(false);
+
+#else
+
     this->setWriteMode(*serial);
 #ifdef DYN_VERBOSE
     debugSerial->printf("[Dynamixel-Com] Available for writing is %i\n", serial->availableForWrite());
@@ -134,4 +145,5 @@ char* DynamixelManager::sendPacket(DynamixelPacketData* packet) const
     this->setReadMode(*serial);
 
     return readPacket(responseSize);
+#endif
 }

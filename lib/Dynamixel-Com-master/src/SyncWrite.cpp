@@ -6,7 +6,7 @@
 #include "SyncWrite.h"
 #include "DynamixelManager.h"
 
-SyncWrite::SyncWrite(const DynamixelManager& manager, const unsigned int motorCount, const DynamixelAccessData& data, uint8_t protocol): manager(manager), address((uint16_t ) (data.address[0] | (data.address[1] << 8))), length(data.length), motorCount(motorCount), protocol(protocol){
+SyncWrite::SyncWrite(const DynamixelManager& manager, const unsigned int motorCount, const DynamixelAccessData& data, uint8_t protocol): manager(manager), address((uint16_t ) (data.address[0] | (data.address[1] << 8))), length(data.length), motorCount(motorCount), protocol(protocol) {
     motors = new uint8_t[motorCount];
     rawData = new char[motorCount*length];
 }

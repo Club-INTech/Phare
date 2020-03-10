@@ -30,7 +30,6 @@ void setup() {
 // code XL
     Serial2.begin(57600);
     manager = new DynamixelManager(4, -1); // Manageur qui permet de communiquer avec les XL
-    //manager = new DynamixelManager(new HardwareSerial(2)); //FIXME: je sais pas laquelle declaration utiliser
     motor1 = manager->createMotor(1 /* ID du XL */, XL430GeneratorFunction); // XL avec l'ID 1
     motor1->changeLED(true); // allume la LED du XL 1
     delay(1000);
