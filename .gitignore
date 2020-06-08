@@ -1,2 +1,4 @@
 .pio
 CMakeListsPrivate.txt
+*.dir
+.idea
