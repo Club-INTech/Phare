@@ -32,11 +32,12 @@ void setup() {
     pinMode(Button, INPUT_PULLUP);
 // Neopixel
     pinMode(LED, OUTPUT);
-    strip = Adafruit_NeoPixel(3, LED, NEO_GRB + NEO_KHZ800);
+    strip = Adafruit_NeoPixel(3, LED, NEO_RGB + NEO_KHZ800);
     strip.begin();
+    strip.fill();
+    //strip.fill(~0u);
     strip.show(); // Initialise tous les pixels à 'off' (éteint)
 
-    delay(1000);
     Serial2.begin(57600, SERIAL_8N1, 16, 17, false, 50);
     Serial2.write(LEDS_ON, sizeof(LEDS_ON));
 }
@@ -57,7 +58,7 @@ void led(){
     delay(INTER_OP_DELAY);
     Serial2.write(MOTOR0_MEDIUM_POS, sizeof(MOTOR0_MEDIUM_POS));
 
-    delay(1000);
+    delay(2*INTER_OP_DELAY);
     Serial2.write(MOTOR1_FINAL_POS, sizeof(MOTOR1_FINAL_POS));
 
     delay(INTER_OP_DELAY);
@@ -69,7 +70,6 @@ void led(){
             strip.show();
             delay(100);
             strip.setPixelColor(i, 0, 0, 0);
-            strip.show();
         }
     }
 }
