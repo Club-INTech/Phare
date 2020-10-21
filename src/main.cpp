@@ -3,51 +3,66 @@
 //
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
-#include <XL430.h>
+#include "XL430.h"
 #include "DynamixelManager.h"
 #include "changementID.h"
 
-#define PIN 25
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(3, PIN, NEO_GRB + NEO_KHZ400);
-int Pin1 = 26;
-float Angle;
+#define LED 14
+#define Button 13
+#define INTER_OP_DELAY 500
 
-DynamixelManager *manager;
+void led(void);
 
-DynamixelMotor *motor1;
+Adafruit_NeoPixel strip;
+
+const uint8_t MOTOR0_FINAL_POS[] = {255,255,253,0,0,9,0,3,116,0,253,7,0,0,178,205}; // 180°
+const uint8_t MOTOR1_FINAL_POS[] = {255,255,253,0,1,9,0,3,116,0,111,8,0,0,83,69}; // 190°
+const uint8_t MOTOR0_MEDIUM_POS[] = {255,255,253,0,0,9,0,3,116,0,254,5,0,0,153,113}; // 135°
+const uint8_t MOTOR1_MEDIUM_POS[] = {255,255,253,0,1,9,0,3,116,0,254,3,0,0,246,145}; // 90°
+const uint8_t ENABLE_TORQUE[] = {255,255,253,0,254,6,0,3,64,0,1,43,150};
+const uint8_t LEDS_ON[] {255,255,253,0,254,6,0,3,65,0,1,60,22};
 
 void setup() {
-// bouton poussoir
-// initialize serial communication:
-    Serial.begin(9600);
-    pinMode(Pin1, INPUT_PULLUP);
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
 
+    Serial.begin(9600);
+
+// bouton poussoir
+    pinMode(Button, INPUT_PULLUP);
 // Neopixel
-    pinMode(OUTPUT, 25);
+    pinMode(LED, OUTPUT);
+    strip = Adafruit_NeoPixel(3, LED, NEO_GRB + NEO_KHZ800);
     strip.begin();
     strip.show(); // Initialise tous les pixels à 'off' (éteint)
 
-// code XL
-    Serial2.begin(57600);
-    manager = new DynamixelManager(4, -1); // Manageur qui permet de communiquer avec les XL
-    motor1 = manager->createMotor(1 /* ID du XL */, XL430GeneratorFunction); // XL avec l'ID 1
-    motor1->changeLED(true); // allume la LED du XL 1
     delay(1000);
-    motor1->changeLED(false);
-    bool tot;
-    motor1->toggleTorque(false);
-    while (true) {
-        motor1->changeLED(tot);
-        float output;
-        motor1->getCurrentAngle(output);
-        Serial.println(output);
-        delay(500);
-        tot = !tot;
+    Serial2.begin(57600, SERIAL_8N1, 16, 17, false, 50);
+    Serial2.write(LEDS_ON, sizeof(LEDS_ON));
+}
+
+void loop(){
+    // bouton poussoir
+    if (digitalRead(Button) == LOW ) {
+        Serial.print("Allumée");
+        led();
     }
 }
-void loop(){}
-/*
+
 void led(){
+    Serial2.write(ENABLE_TORQUE, sizeof(ENABLE_TORQUE));
+
+    Serial2.write(MOTOR1_MEDIUM_POS, sizeof(MOTOR1_MEDIUM_POS));
+
+    delay(INTER_OP_DELAY);
+    Serial2.write(MOTOR0_MEDIUM_POS, sizeof(MOTOR0_MEDIUM_POS));
+
+    delay(1000);
+    Serial2.write(MOTOR1_FINAL_POS, sizeof(MOTOR1_FINAL_POS));
+
+    delay(INTER_OP_DELAY);
+    Serial2.write(MOTOR0_FINAL_POS, sizeof(MOTOR0_FINAL_POS));
+
     while (true) {
         for (int i = 0; i<3; i++) {
             strip.setPixelColor(i, 255, 255, 255);
@@ -58,20 +73,3 @@ void led(){
         }
     }
 }
-
-void loop(){
-    // bouton poussoir
-    if (digitalRead(Pin1) == LOW )
-    {
-        Serial.print("Allumée");
-        led();
-    }
-    else
-    {
-        Serial.print("Éteint");
-    }
-// Neopixel
-
-// code XL
-}
-*/
