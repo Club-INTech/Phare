@@ -3,6 +3,7 @@
 //
 #include <Arduino.h>
 #include "DynamixelManager.h"
+#include "XL430.h"
 
 #define Button 13
 #define INTER_OP_DELAY 500
@@ -11,19 +12,30 @@
 
 void led(void);
 
-const uint8_t MOTOR0_FINAL_POS[] = {255,255,253,0,0,9,0,3,116,0,253,7,0,0,178,205}; // 180°
-const uint8_t MOTOR1_FINAL_POS[] = {255,255,253,0,1,9,0,3,116,0,111,8,0,0,83,69}; // 190°
+const uint8_t MOTOR0_FINAL_POS[] = {255,255,253,0,0,9,0,3,116,0,196,7,0,0,184,185}; // 175°
+const uint8_t MOTOR1_FINAL_POS[] = {255,255,253,0,1,9,0,3,116,0,167,8,0,0,114,101}; // 195°
+const uint8_t MOTOR1_MEDIUM_POS_BIS[] = {255,255,253,0,1,9,0,3,116,0,242,5,0,0,142,97};//134°
 const uint8_t MOTOR0_MEDIUM_POS[] = {255,255,253,0,0,9,0,3,116,0,254,5,0,0,153,113}; // 135°
 const uint8_t MOTOR1_MEDIUM_POS[] = {255,255,253,0,1,9,0,3,116,0,254,3,0,0,246,145}; // 90°
 const uint8_t ENABLE_TORQUE[] = {255,255,253,0,254,6,0,3,64,0,1,43,150};
 const uint8_t LEDS_ON[] {255,255,253,0,254,6,0,3,65,0,1,60,22};
 
+DynamixelManager* manager;
+DynamixelMotor* motor;
+
 void setup() {
+    /*
+     //Ce code est utilisé pour déterminer les valeurs des paquets à envoyer
+    Serial.begin(9600);
+    manager = new DynamixelManager(2, -1, &Serial);
+    motor = manager ->createMotor(1, XL430GeneratorFunction);
+    motor->setGoalAngle(134);
+    while (1);
+    // */
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(LED, OUTPUT);
     digitalWrite(LED, LOW);
     digitalWrite(LED_BUILTIN, HIGH);
-    Serial.begin(9600);
 
 // bouton poussoir
     pinMode(Button, INPUT_PULLUP);
@@ -49,8 +61,10 @@ void led(){
     Serial2.write(MOTOR0_MEDIUM_POS, sizeof(MOTOR0_MEDIUM_POS));
 
     delay(2*INTER_OP_DELAY);
-    Serial2.write(MOTOR1_FINAL_POS, sizeof(MOTOR1_FINAL_POS));
+    Serial2.write(MOTOR1_MEDIUM_POS, sizeof(MOTOR1_MEDIUM_POS_BIS));
 
+    delay(INTER_OP_DELAY);
+    Serial2.write(MOTOR1_FINAL_POS, sizeof(MOTOR1_FINAL_POS));
     delay(INTER_OP_DELAY);
     Serial2.write(MOTOR0_FINAL_POS, sizeof(MOTOR0_FINAL_POS));
     delay(INTER_OP_DELAY);
